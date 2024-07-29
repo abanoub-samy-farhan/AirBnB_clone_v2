@@ -8,14 +8,13 @@ from models.city import City
 
 class State(BaseModel, Base):
     """State class that inherits BaseModel and maps to states table."""
+    
     __tablename__ = 'states'
-    name = Column(String(128), nullable=False)
-
-
     if getenv("HBNB_TYPE_STORAGE") == "db":
+        name = Column(String(128), nullable=False)
         cities = relationship("City", back_populates="states", cascade="all, delete")
     else:
-        @getattr
+        @property
         def cities(self):
             """
             This funciton returns the cities that have the same state_id
@@ -23,7 +22,6 @@ class State(BaseModel, Base):
             Return: it return the list of the cities that have the same state_id
             """
             from models import storage
-            from city import City
 
             all_obj = storage.all(City)
             city_list = []
